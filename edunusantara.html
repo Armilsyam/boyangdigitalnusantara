@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard EdTech Profesional</title>
+    
+    <!-- Memuat Font Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Memuat Tailwind CSS melalui CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Memuat Phosphor Icons untuk ikon-ikon yang konsisten -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Memuat Chart.js untuk grafik garis dan batang -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#4f46e5', // Utama (Indigo)
+                            600: '#4338ca',
+                            900: '#312e81',
+                        },
+                        success: '#10b981', // Emerald
+                        warning: '#f59e0b', // Amber
+                        danger: '#f43f5e',  // Rose
+                        info: '#3b82f6',    // Blue
+                        sidebar: '#0f172a', // Biru dongker gelap
+                        workspace: '#f8fafc',
+                    },
+                    borderRadius: {
+                        '4xl': '2.5rem', // 40px untuk kartu dashboard
+                        '5xl': '3rem',   // 48px untuk banner promo
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+                        'sidebar-active': '0 10px 15px -3px rgba(79, 70, 229, 0.4)',
+                    },
+                    letterSpacing: {
+                        'tightest': '-0.02em',
+                        'widest-kpi': '0.1em',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Gaya tambahan khusus */
+        body {
+            background-color: #f8fafc;
+        }
+        
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .transition-hover {
+            transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: scale(1.02);
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .promo-gradient {
+            background: linear-gradient(135deg, #4f46e5, #3730a3);
+        }
+    </style>
+</head>
+<body class="font-sans text-slate-800 antialiased h-screen overflow-hidden flex bg-workspace">
+
+    <!-- Sidebar -->
+    <aside class="w-[280px] bg-sidebar flex-shrink-0 flex flex-col h-full overflow-y-auto hide-scrollbar z-20 hidden md:flex border-r border-slate-800">
+        <!-- Logo -->
+        <div class="p-6 flex items-center gap-3">
+            <div class="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-brand-500/30">
+                <i class="ph-bold ph-graduation-cap text-2xl"></i>
+            </div>
+            <span class="text-white font-extrabold text-xl tracking-tightest">EduNusantara</span>
+        </div>
+
+        <!-- Menu Navigasi -->
+        <div class="flex-1 px-4 py-2 space-y-8">
+            
+            <!-- Manajemen -->
+            <div>
+                <p class="text-[11px] font-bold text-slate-500 uppercase tracking-widest-kpi mb-3 px-2">Manajemen</p>
+                <nav class="space-y-1">
+                    <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-xl bg-brand-500 text-white shadow-sidebar-active transition-hover">
+                        <div class="flex items-center gap-3 text-[13px] font-semibold">
+                            <i class="ph-fill ph-squares-four text-lg"></i>
+                            Ikhtisar
+                        </div>
+                    </a>
+                    <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-hover group">
+                        <div class="flex items-center gap-3 text-[13px] font-medium group-hover:font-semibold">
+                            <i class="ph ph-books text-lg group-hover:text-brand-400"></i>
+                            Kursus & Modul
+                        </div>
+                        <i class="ph-bold ph-caret-right text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                    </a>
+                    <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-hover group">
+                        <div class="flex items-center gap-3 text-[13px] font-medium group-hover:font-semibold">
+                            <i class="ph ph-users text-lg group-hover:text-brand-400"></i>
+                            Siswa & Pengajar
+                        </div>
+                        <i class="ph-bold ph-caret-right text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                    </a>
+                    <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-hover group">
+                        <div class="flex items-center gap-3 text-[13px] font-medium group-hover:font-semibold">
+                            <i class="ph ph-calendar-check text-lg group-hover:text-brand-400"></i>
+                            Jadwal Kelas
+                        </div>
+                        <i class="ph-bold ph-caret-right text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Keuangan -->
+            <div>
+                <p class="text-[11px] font-bold text-slate-500 uppercase tracking-widest-kpi mb-3 px-2">Keuangan & Analitik</p>
+                <nav class="space-y-1">
+                    <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-hover group">
+                        <div class="flex items-center gap-3 text-[13px] font-medium group-hover:font-semibold">
+                            <i class="ph ph-chart-line-up text-lg group-hover:text-success"></i>
+                            Laporan Performa
+                        </div>
+                        <i class="ph-bold ph-caret-right text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                    </a>
+                    <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-hover group">
+                        <div class="flex items-center gap-3 text-[13px] font-medium group-hover:font-semibold">
+                            <i class="ph ph-wallet text-lg group-hover:text-warning"></i>
+                            Pendapatan
+                        </div>
+                        <i class="ph-bold ph-caret-right text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Kartu Bantuan -->
+        <div class="p-4 mt-auto">
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 transition-hover hover:border-slate-600">
+                <div class="w-8 h-8 rounded-lg bg-slate-700 text-brand-400 flex items-center justify-center mb-3">
+                    <i class="ph-fill ph-headset text-lg"></i>
+                </div>
+                <h4 class="text-white text-sm font-bold mb-1">Butuh Bantuan?</h4>
+                <p class="text-slate-400 text-xs font-inter leading-relaxed mb-3">Tim dukungan kami siap membantu Anda 24/7.</p>
+                <button class="w-full bg-slate-700 hover:bg-slate-600 text-white text-[13px] font-semibold py-2 rounded-xl transition-colors">
+                    Hubungi Dukungan
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Konten Utama -->
+    <main class="flex-1 flex flex-col h-full relative">
+        
+        <!-- Sticky Header -->
+        <header class="h-[80px] bg-white border-b border-slate-100 flex items-center justify-between px-6 sticky top-0 z-10">
+            <!-- Kiri: Menu Toggle & Pencarian -->
+            <div class="flex items-center gap-4">
+                <button class="md:hidden text-slate-500 hover:text-brand-500 p-2">
+                    <i class="ph ph-list text-2xl"></i>
+                </button>
+                <div class="relative hidden sm:block w-[400px]">
+                    <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
+                    <input type="text" placeholder="Cari siswa, modul, atau laporan..." 
+                           class="w-full bg-slate-50 text-sm py-2.5 pl-10 pr-4 rounded-2xl border-none focus:ring-2 focus:ring-brand-500/20 focus:bg-white transition-all font-inter">
+                </div>
+            </div>
+
+            <!-- Kanan: Aksi & Profil -->
+            <div class="flex items-center gap-3 sm:gap-5">
+                <div class="flex items-center gap-2">
+                    <button class="p-2 text-slate-400 hover:text-brand-500 hover:bg-brand-50 rounded-xl transition-colors">
+                        <i class="ph ph-moon text-xl"></i>
+                    </button>
+                    <button class="p-2 text-slate-400 hover:text-brand-500 hover:bg-brand-50 rounded-xl transition-colors relative">
+                        <i class="ph ph-chat-circle text-xl"></i>
+                    </button>
+                    <button class="p-2 text-slate-400 hover:text-brand-500 hover:bg-brand-50 rounded-xl transition-colors relative">
+                        <i class="ph ph-bell text-xl"></i>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-danger rounded-full border-2 border-white"></span>
+                    </button>
+                </div>
+                
+                <div class="w-px h-8 bg-slate-200 hidden sm:block"></div>
+                
+                <!-- Pilihan Bahasa -->
+                <button class="hidden sm:flex items-center gap-2 p-1.5 hover:bg-slate-50 rounded-xl transition-colors">
+                    <img src="https://flagcdn.com/id.svg" alt="Indonesia" class="w-5 h-5 rounded-full object-cover">
+                    <i class="ph-bold ph-caret-down text-[10px] text-slate-400"></i>
+                </button>
+
+                <!-- Profil -->
+                <div class="flex items-center gap-3 cursor-pointer pl-1 sm:pl-2">
+                    <div class="hidden sm:flex flex-col items-end">
+                        <span class="text-sm font-bold text-slate-800">Budi Santoso</span>
+                        <span class="text-[11px] font-bold text-slate-500 tracking-wide uppercase">Admin Pusat</span>
+                    </div>
+                    <img src="https://i.pravatar.cc/150?u=budi" alt="Budi Santoso" class="w-10 h-10 rounded-xl object-cover ring-2 ring-white shadow-sm">
+                </div>
+            </div>
+        </header>
+
+        <!-- Area Scroll Konten -->
+        <div class="flex-1 overflow-y-auto p-6 lg:p-8 hide-scrollbar">
+            
+            <!-- Salam -->
+            <div class="mb-8">
+                <h1 class="text-2xl font-extrabold text-slate-800 tracking-tightest">Selamat Pagi, Budi 👋</h1>
+                <p class="text-slate-500 text-sm font-inter mt-1">Berikut adalah ringkasan performa platform belajar hari ini.</p>
+            </div>
+
+            <!-- Grid KPI -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6 mb-8">
+                
+                <!-- KPI 1: Total Siswa -->
+                <div class="bg-white rounded-[2.5rem] p-6 shadow-soft transition-hover card-hover border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-brand-50 text-brand-500 flex items-center justify-center">
+                                <i class="ph-fill ph-users-three text-2xl"></i>
+                            </div>
+                            <span class="bg-success/10 text-success text-[11px] font-bold px-2 py-1 rounded-lg flex items-center gap-1">
+                                <i class="ph-bold ph-trend-up"></i> 12%
+                            </span>
+                        </div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest-kpi mb-1">Total Siswa Aktif</p>
+                        <h3 class="text-3xl font-black text-slate-800">24.5k</h3>
+                    </div>
+                    <div class="h-10 mt-4 w-full">
+                        <svg viewBox="0 0 100 40" class="w-full h-full preserve-aspect-ratio-none">
+                            <path d="M0,35 Q15,10 30,25 T60,15 T100,5" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- KPI 2: Kursus Selesai -->
+                <div class="bg-white rounded-[2.5rem] p-6 shadow-soft transition-hover card-hover border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-success/10 text-success flex items-center justify-center">
+                                <i class="ph-fill ph-certificate text-2xl"></i>
+                            </div>
+                            <span class="bg-success/10 text-success text-[11px] font-bold px-2 py-1 rounded-lg flex items-center gap-1">
+                                <i class="ph-bold ph-trend-up"></i> 8.4%
+                            </span>
+                        </div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest-kpi mb-1">Kursus Diselesaikan</p>
+                        <h3 class="text-3xl font-black text-slate-800">8,290</h3>
+                    </div>
+                    <div class="h-10 mt-4 w-full">
+                        <svg viewBox="0 0 100 40" class="w-full h-full preserve-aspect-ratio-none">
+                            <path d="M0,30 Q20,35 40,20 T70,25 T100,10" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- KPI 3: Rata-rata Skor -->
+                <div class="bg-white rounded-[2.5rem] p-6 shadow-soft transition-hover card-hover border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-info/10 text-info flex items-center justify-center">
+                                <i class="ph-fill ph-target text-2xl"></i>
+                            </div>
+                            <span class="bg-slate-100 text-slate-500 text-[11px] font-bold px-2 py-1 rounded-lg flex items-center gap-1">
+                                <i class="ph-bold ph-minus"></i> 0%
+                            </span>
+                        </div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest-kpi mb-1">Rata-rata Kelulusan</p>
+                        <h3 class="text-3xl font-black text-slate-800">86.4<span class="text-lg text-slate-400 font-bold">%</span></h3>
+                    </div>
+                    <div class="h-10 mt-4 w-full">
+                        <svg viewBox="0 0 100 40" class="w-full h-full preserve-aspect-ratio-none">
+                            <path d="M0,20 L20,20 L40,25 L60,15 L80,20 L100,20" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- KPI 4: Jam Belajar -->
+                <div class="bg-white rounded-[2.5rem] p-6 shadow-soft transition-hover card-hover border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-warning/10 text-warning flex items-center justify-center">
+                                <i class="ph-fill ph-clock-countdown text-2xl"></i>
+                            </div>
+                            <span class="bg-danger/10 text-danger text-[11px] font-bold px-2 py-1 rounded-lg flex items-center gap-1">
+                                <i class="ph-bold ph-trend-down"></i> 2.1%
+                            </span>
+                        </div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest-kpi mb-1">Rata Jam Belajar/Mg</p>
+                        <h3 class="text-3xl font-black text-slate-800">4.2<span class="text-lg text-slate-400 font-bold">j</span></h3>
+                    </div>
+                    <div class="h-10 mt-4 w-full">
+                        <svg viewBox="0 0 100 40" class="w-full h-full preserve-aspect-ratio-none">
+                            <path d="M0,15 Q25,10 50,25 T100,35" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- KPI 5: Pendapatan -->
+                <div class="bg-white rounded-[2.5rem] p-6 shadow-soft transition-hover card-hover border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-danger/10 text-danger flex items-center justify-center">
+                                <i class="ph-fill ph-currency-circle-dollar text-2xl"></i>
+                            </div>
+                            <span class="bg-success/10 text-success text-[11px] font-bold px-2 py-1 rounded-lg flex items-center gap-1">
+                                <i class="ph-bold ph-trend-up"></i> 18%
+                            </span>
+                        </div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest-kpi mb-1">Pemasukan Bulan Ini</p>
+                        <h3 class="text-3xl font-black text-slate-800">142<span class="text-lg text-slate-400 font-bold">jt</span></h3>
+                    </div>
+                    <div class="h-10 mt-4 w-full">
+                        <svg viewBox="0 0 100 40" class="w-full h-full preserve-aspect-ratio-none">
+                            <path d="M0,35 L20,30 L40,15 L60,20 L80,5 L100,0" fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Area Analitik Utama -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 lg:gap-6 mb-8">
+                
+                <!-- Grafik Garis (6-kolom) -->
+                <div class="col-span-1 md:col-span-12 lg:col-span-6 bg-white rounded-[2.5rem] p-6 shadow-soft border border-slate-100 flex flex-col">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="font-extrabold text-lg text-slate-800">Aktivitas Pendaftaran</h3>
+                            <p class="text-xs text-slate-500 font-inter mt-1">Tren pendaftaran siswa baru per bulan</p>
+                        </div>
+                        <button class="px-3 py-1.5 bg-slate-50 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 flex items-center gap-2">
+                            Tahun Ini <i class="ph-bold ph-caret-down"></i>
+                        </button>
+                    </div>
+                    <div class="flex-1 min-h-[200px] relative">
+                        <canvas id="enrollmentChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Grafik Donat Distribusi (3-kolom) -->
+                <div class="col-span-1 md:col-span-6 lg:col-span-3 bg-white rounded-[2.5rem] p-6 shadow-soft border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-extrabold text-lg text-slate-800">Kategori Populer</h3>
+                        <p class="text-xs text-slate-500 font-inter mt-1">Distribusi pendaftaran berdasar kategori</p>
+                    </div>
+                    
+                    <div class="relative w-full aspect-square max-w-[180px] mx-auto mt-4 mb-2">
+                        <!-- Custom SVG Donut -->
+                        <svg viewBox="0 0 100 100" class="w-full h-full transform -rotate-90">
+                            <!-- Latar Belakang Lingkaran -->
+                            <circle cx="50" cy="50" r="40" fill="none" stroke="#f1f5f9" stroke-width="8" />
+                            
+                            <!-- Segmen 1 (Pemrograman - 45%) -->
+                            <circle cx="50" cy="50" r="40" fill="none" stroke="#4f46e5" stroke-width="8" 
+                                    stroke-dasharray="251.2" stroke-dashoffset="138.16" stroke-linecap="round" />
+                            
+                            <!-- Segmen 2 (Desain - 30%) -->
+                            <circle cx="50" cy="50" r="40" fill="none" stroke="#10b981" stroke-width="8" 
+                                    stroke-dasharray="251.2" stroke-dashoffset="175.84" stroke-linecap="round" 
+                                    class="transform origin-center rotate-[162deg]" />
+                            
+                            <!-- Segmen 3 (Bisnis - 25%) -->
+                            <circle cx="50" cy="50" r="40" fill="none" stroke="#f59e0b" stroke-width="8" 
+                                    stroke-dasharray="251.2" stroke-dashoffset="188.4" stroke-linecap="round" 
+                                    class="transform origin-center rotate-[270deg]" />
+                        </svg>
+                        
+                        <!-- Konten Tengah -->
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest-kpi">Total</span>
+                            <span class="text-3xl font-black text-slate-800">42<span class="text-lg font-bold text-slate-400">k</span></span>
+                        </div>
+                    </div>
+
+                    <!-- Legenda Kustom -->
+                    <div class="space-y-2 mt-2">
+                        <div class="flex justify-between items-center text-[11px] font-inter">
+                            <div class="flex items-center gap-2 text-slate-500">
+                                <span class="w-2 h-2 rounded-full bg-brand-500"></span> Pemrograman
+                            </div>
+                            <span class="font-bold text-slate-800">45%</span>
+                        </div>
+                        <div class="flex justify-between items-center text-[11px] font-inter">
+                            <div class="flex items-center gap-2 text-slate-500">
+                                <span class="w-2 h-2 rounded-full bg-success"></span> Desain UI/UX
+                            </div>
+                            <span class="font-bold text-slate-800">30%</span>
+                        </div>
+                        <div class="flex justify-between items-center text-[11px] font-inter">
+                            <div class="flex items-center gap-2 text-slate-500">
+                                <span class="w-2 h-2 rounded-full bg-warning"></span> Bisnis Digital
+                            </div>
+                            <span class="font-bold text-slate-800">25%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daftar Top Performer (3-kolom) -->
+                <div class="col-span-1 md:col-span-6 lg:col-span-3 bg-white rounded-[2.5rem] p-6 shadow-soft border border-slate-100 flex flex-col">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-extrabold text-lg text-slate-800">Pengajar Terbaik</h3>
+                        <button class="text-brand-500 text-xs font-bold hover:underline">Lihat Semua</button>
+                    </div>
+                    
+                    <div class="flex flex-col gap-4">
+                        <!-- Item 1 -->
+                        <div class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 transition-colors cursor-pointer border border-transparent hover:border-slate-100">
+                            <div class="relative">
+                                <img src="https://i.pravatar.cc/150?u=1" alt="Avatar" class="w-10 h-10 rounded-xl object-cover">
+                                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-warning rounded-full border-2 border-white flex items-center justify-center">
+                                    <i class="ph-fill ph-star text-[8px] text-white"></i>
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-sm font-bold text-slate-800 truncate">Dr. Sarah W.</h4>
+                                <p class="text-[11px] text-slate-500 truncate font-inter">Data Science</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs font-bold text-slate-800">4.9</div>
+                                <div class="text-[10px] text-slate-400">1.2k ulasan</div>
+                            </div>
+                        </div>
+
+                        <!-- Item 2 -->
+                        <div class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 transition-colors cursor-pointer border border-transparent hover:border-slate-100">
+                            <div class="relative">
+                                <img src="https://i.pravatar.cc/150?u=2" alt="Avatar" class="w-10 h-10 rounded-xl object-cover">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-sm font-bold text-slate-800 truncate">Ahmad F.</h4>
+                                <p class="text-[11px] text-slate-500 truncate font-inter">Frontend Dev</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs font-bold text-slate-800">4.8</div>
+                                <div class="text-[10px] text-slate-400">850 ulasan</div>
+                            </div>
+                        </div>
+
+                         <!-- Item 3 -->
+                         <div class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 transition-colors cursor-pointer border border-transparent hover:border-slate-100">
+                            <div class="relative">
+                                <img src="https://i.pravatar.cc/150?u=3" alt="Avatar" class="w-10 h-10 rounded-xl object-cover">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-sm font-bold text-slate-800 truncate">Maria T.</h4>
+                                <p class="text-[11px] text-slate-500 truncate font-inter">Manajemen Produk</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs font-bold text-slate-800">4.7</div>
+                                <div class="text-[10px] text-slate-400">620 ulasan</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 lg:gap-6 mb-8">
+                
+                <!-- Timeline Aktivitas (4-kolom) -->
+                <div class="col-span-1 md:col-span-6 lg:col-span-4 bg-white rounded-[2.5rem] p-6 shadow-soft border border-slate-100">
+                    <h3 class="font-extrabold text-lg text-slate-800 mb-6">Aktivitas Terbaru</h3>
+                    
+                    <div class="relative border-l-2 border-slate-100 ml-3 space-y-6">
+                        <!-- Item Timeline -->
+                        <div class="relative pl-6">
+                            <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-success ring-4 ring-white"></div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest-kpi mb-1">10 Menit yang lalu</p>
+                            <h4 class="text-sm font-bold text-slate-800">Modul Baru Diterbitkan</h4>
+                            <p class="text-xs text-slate-500 font-inter mt-1">"Pengantar React Hooks" oleh Ahmad F.</p>
+                        </div>
+
+                        <div class="relative pl-6">
+                            <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-brand-500 ring-4 ring-white"></div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest-kpi mb-1">1 Jam yang lalu</p>
+                            <h4 class="text-sm font-bold text-slate-800">Pendaftaran Kelompok Baru</h4>
+                            <p class="text-xs text-slate-500 font-inter mt-1">50 siswa mendaftar ke kursus Bootcamp UI/UX.</p>
+                        </div>
+
+                        <div class="relative pl-6">
+                            <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-warning ring-4 ring-white"></div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest-kpi mb-1">Kemarin</p>
+                            <h4 class="text-sm font-bold text-slate-800">Pemeliharaan Server Selesai</h4>
+                            <p class="text-xs text-slate-500 font-inter mt-1">Sistem kembali berjalan normal tanpa kendala.</p>
+                        </div>
+                    </div>
+                    <button class="w-full mt-6 py-2.5 text-center text-xs font-bold text-brand-500 hover:bg-brand-50 rounded-xl transition-colors">Lihat Semua Aktivitas</button>
+                </div>
+
+                <!-- Bar Chart Pendapatan (5-kolom) -->
+                <div class="col-span-1 md:col-span-6 lg:col-span-5 bg-white rounded-[2.5rem] p-6 shadow-soft border border-slate-100 flex flex-col">
+                    <div class="flex justify-between items-end mb-6">
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest-kpi mb-1">Total Pendapatan (Q3)</p>
+                            <h3 class="text-4xl font-black text-slate-800 tracking-tightest">Rp 4.2<span class="text-xl text-slate-400 font-bold">Miliar</span></h3>
+                        </div>
+                        <span class="bg-success/10 text-success text-[11px] font-bold px-2 py-1.5 rounded-lg flex items-center gap-1 mb-2">
+                            <i class="ph-bold ph-trend-up"></i> 14.5% dari Q2
+                        </span>
+                    </div>
+                    <div class="flex-1 w-full min-h-[180px] relative">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Ringkasan Status Server/Sistem (3-kolom) -->
+                <div class="col-span-1 md:col-span-12 lg:col-span-3 bg-sidebar rounded-[2.5rem] p-6 shadow-soft text-white flex flex-col justify-between relative overflow-hidden">
+                    <!-- Elemen dekoratif -->
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-brand-500 rounded-full blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-extrabold text-lg text-white">Status Sistem</h3>
+                            <div class="w-2 h-2 rounded-full bg-success animate-pulse shadow-[0_0_8px_#10b981]"></div>
+                        </div>
+                        
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="relative w-16 h-16">
+                                <svg viewBox="0 0 36 36" class="w-full h-full transform -rotate-90">
+                                    <path class="text-slate-700" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4" />
+                                    <path class="text-success" stroke-dasharray="98, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center text-sm font-black">98%</div>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-slate-200">Uptime Bulanan</h4>
+                                <p class="text-[11px] text-slate-400 font-inter">Optimal & Stabil</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="bg-slate-800/50 rounded-xl p-3 flex justify-between items-center border border-slate-700/50">
+                                <span class="text-xs font-medium text-slate-300">Beban Server</span>
+                                <span class="text-xs font-bold text-success">Rendah (24%)</span>
+                            </div>
+                            <div class="bg-slate-800/50 rounded-xl p-3 flex justify-between items-center border border-slate-700/50">
+                                <span class="text-xs font-medium text-slate-300">Ruang Penyimpanan</span>
+                                <span class="text-xs font-bold text-warning">Terpakai 68%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 pb-6">
+                
+                <!-- Banner Promo Glassmorphism (8-kolom) -->
+                <div class="col-span-1 lg:col-span-8 promo-gradient rounded-5xl p-8 lg:p-10 relative overflow-hidden flex items-center shadow-lg shadow-brand-500/20">
+                    
+                    <!-- Dekorasi Lingkaran Latar -->
+                    <div class="absolute -left-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+                    <div class="absolute right-20 -bottom-10 w-32 h-32 bg-brand-900/40 rounded-full blur-xl"></div>
+
+                    <div class="relative z-10 w-full md:w-3/5">
+                        <span class="inline-block px-3 py-1 bg-white/20 text-white text-[10px] font-bold uppercase tracking-widest-kpi rounded-lg backdrop-blur-sm mb-4">Fitur Baru</span>
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-white mb-3 leading-tight">Optimalkan Kelas Anda dengan AI Asisten</h2>
+                        <p class="text-brand-100 text-sm font-inter mb-6 leading-relaxed">Gunakan teknologi AI terbaru untuk menilai tugas secara otomatis dan memberikan umpan balik yang dipersonalisasi kepada siswa.</p>
+                        <button class="bg-white text-brand-600 px-6 py-3 rounded-2xl font-bold text-sm shadow-[0_8px_16px_-4px_rgba(0,0,0,0.2)] hover:-translate-y-1 transition-transform">
+                            Aktifkan Sekarang
+                        </button>
+                    </div>
+
+                    <!-- Jendela Kaca Melayang -->
+                    <div class="hidden md:block absolute right-8 top-1/2 -translate-y-1/2 w-64 h-48 glass-panel rounded-3xl transform rotate-6 shadow-2xl p-5 flex flex-col justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center text-white">
+                                <i class="ph-fill ph-robot text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="h-2 w-20 bg-white/30 rounded mb-2"></div>
+                                <div class="h-2 w-12 bg-white/20 rounded"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="h-6 w-full bg-white/10 rounded-lg flex items-center px-2">
+                                <div class="w-2 h-2 rounded-full bg-success mr-2"></div>
+                                <div class="h-1.5 w-16 bg-white/40 rounded"></div>
+                            </div>
+                            <div class="h-6 w-full bg-white/10 rounded-lg flex items-center px-2">
+                                <div class="w-2 h-2 rounded-full bg-success mr-2"></div>
+                                <div class="h-1.5 w-24 bg-white/40 rounded"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aksi Cepat (4-kolom) -->
+                <div class="col-span-1 lg:col-span-4 bg-white rounded-5xl p-6 shadow-soft border border-slate-100">
+                    <h3 class="font-extrabold text-lg text-slate-800 mb-4">Aksi Cepat</h3>
+                    <div class="grid grid-cols-2 gap-4 h-[calc(100%-2rem)]">
+                        
+                        <button class="bg-slate-50 hover:bg-brand-50 rounded-3xl flex flex-col items-center justify-center p-4 transition-colors group border border-slate-100 hover:border-brand-200">
+                            <div class="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-slate-400 group-hover:text-brand-500 mb-3 transition-colors">
+                                <i class="ph-bold ph-plus text-xl"></i>
+                            </div>
+                            <span class="text-xs font-bold text-slate-700">Buat Kelas</span>
+                        </button>
+
+                        <button class="bg-slate-50 hover:bg-success/10 rounded-3xl flex flex-col items-center justify-center p-4 transition-colors group border border-slate-100 hover:border-success/30">
+                            <div class="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-slate-400 group-hover:text-success mb-3 transition-colors">
+                                <i class="ph-bold ph-user-plus text-xl"></i>
+                            </div>
+                            <span class="text-xs font-bold text-slate-700">Undang Siswa</span>
+                        </button>
+
+                        <button class="bg-slate-50 hover:bg-warning/10 rounded-3xl flex flex-col items-center justify-center p-4 transition-colors group border border-slate-100 hover:border-warning/30">
+                            <div class="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-slate-400 group-hover:text-warning mb-3 transition-colors">
+                                <i class="ph-bold ph-megaphone text-xl"></i>
+                            </div>
+                            <span class="text-xs font-bold text-slate-700">Pengumuman</span>
+                        </button>
+
+                        <button class="bg-slate-50 hover:bg-info/10 rounded-3xl flex flex-col items-center justify-center p-4 transition-colors group border border-slate-100 hover:border-info/30">
+                            <div class="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-slate-400 group-hover:text-info mb-3 transition-colors">
+                                <i class="ph-bold ph-file-text text-xl"></i>
+                            </div>
+                            <span class="text-xs font-bold text-slate-700">Laporan</span>
+                        </button>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Konfigurasi Umum Chart.js
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.color = '#94a3b8'; // text-slate-400
+        Chart.defaults.scale.grid.color = '#f1f5f9'; // text-slate-100
+
+        // Inisialisasi Grafik Garis (Tren Pendaftaran)
+        const ctxEnrollment = document.getElementById('enrollmentChart').getContext('2d');
+        
+        // Membuat gradien untuk area bawah garis
+        const gradientBlue = ctxEnrollment.createLinearGradient(0, 0, 0, 300);
+        gradientBlue.addColorStop(0, 'rgba(79, 70, 229, 0.2)'); // Brand-500 dengan opasitas
+        gradientBlue.addColorStop(1, 'rgba(79, 70, 229, 0)');
+
+        new Chart(ctxEnrollment, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'],
+                datasets: [{
+                    label: 'Siswa Baru',
+                    data: [1200, 1900, 1500, 2200, 1800, 2800, 2400],
+                    borderColor: '#4f46e5', // Brand-500
+                    backgroundColor: gradientBlue,
+                    borderWidth: 3,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#4f46e5',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: true,
+                    tension: 0.4 // Membuat garis melengkung halus
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#0f172a',
+                        titleFont: { family: 'Plus Jakarta Sans', weight: 'bold' },
+                        bodyFont: { family: 'Inter' },
+                        padding: 12,
+                        cornerRadius: 8,
+                        displayColors: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false, drawBorder: false }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        border: { display: false },
+                        ticks: { stepSize: 1000 }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+            }
+        });
+
+        // Inisialisasi Grafik Batang (Pendapatan)
+        const ctxRevenue = document.getElementById('revenueChart').getContext('2d');
+        new Chart(ctxRevenue, {
+            type: 'bar',
+            data: {
+                labels: ['Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep'],
+                datasets: [{
+                    label: 'Pendapatan (Juta Rp)',
+                    data: [450, 520, 480, 610, 590, 720],
+                    backgroundColor: '#e2e8f0', // slate-200 untuk bulan biasa
+                    hoverBackgroundColor: '#10b981', // success untuk hover
+                    borderRadius: 6,
+                    borderSkipped: false,
+                    barThickness: 24,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#0f172a',
+                        titleFont: { family: 'Plus Jakarta Sans', weight: 'bold' },
+                        bodyFont: { family: 'Inter' },
+                        callbacks: {
+                            label: function(context) {
+                                return 'Rp ' + context.parsed.y + ' Juta';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false, drawBorder: false }
+                    },
+                    y: {
+                        display: false, // Sembunyikan sumbu Y untuk tampilan lebih bersih
+                        beginAtZero: true
+                    }
+                },
+                // Logika untuk mewarnai batang terakhir (bulan ini) dengan warna utama
+                animation: {
+                    onComplete: function(animation) {
+                        const chartInstance = animation.chart;
+                        const dataset = chartInstance.data.datasets[0];
+                        const meta = chartInstance.getDatasetMeta(0);
+                        // Warnai batang terakhir dengan warna Indigo
+                        dataset.backgroundColor = dataset.data.map((_, index) => 
+                            index === dataset.data.length - 1 ? '#4f46e5' : '#e2e8f0'
+                        );
+                        chartInstance.update('none'); // Update tanpa animasi ulang
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
